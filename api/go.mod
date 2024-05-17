@@ -3,7 +3,6 @@ module github.com/SashaMelva/smart_filter
 go 1.22.2
 
 require (
-	github.com/SashaMelva/web-service-gin v0.0.0-20240503095343-3a1f9350b711
 	github.com/gin-gonic/gin v1.10.0
 	github.com/jackc/pgx v3.6.2+incompatible
 	github.com/spf13/viper v1.18.2

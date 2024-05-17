@@ -8,6 +8,7 @@ type User struct {
 	LastName     string
 	Age          int
 	DateBirthday int
+	AgeCategory  int
 }
 
 type ChilgrenLists struct {
@@ -16,10 +17,9 @@ type ChilgrenLists struct {
 }
 
 type Chilgren struct {
-	Id          int
-	IdUser      int
-	IdParent    int
-	AgeCategory string
+	Id       int
+	IdUser   int
+	IdParent int
 }
 
 type FilterLists struct {
