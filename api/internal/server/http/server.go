@@ -8,6 +8,7 @@ import (
 
 	"github.com/SashaMelva/smart_filter/internal/app"
 	"github.com/SashaMelva/smart_filter/internal/config"
+	"github.com/SashaMelva/smart_filter/internal/handler/httphandler"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -20,13 +21,19 @@ type Server struct {
 func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpServer) *Server {
 	log.Debug("URL: " + config.Host + ":" + config.Port)
 	router := gin.Default()
-	// handler := httphandler.NewHendler(log, app)
+	handler := httphandler.NewHendler(log, app)
 
 	router.GET("/", func(ctx *gin.Context) {
 		fmt.Println("Hellow world)")
 	})
 
-	// router.POST("/event/", handler.)
+	router.GET("/user/:id", handler.GetUser)
+	router.POST("/user/", handler.CreateUser)
+	router.PUT("/user/", handler.UpdateUser)
+	router.DELETE("/user/:id", handler.DeleteUser)
+
+	// router.GET("/account-chaild/", handler.GetAccountsChailds)
+	// router.POST("/account-chaild/", handler.linkingСhildsAccount)
 
 	return &Server{
 		srv: &http.Server{
