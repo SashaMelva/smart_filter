@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/SashaMelva/smart_filter/internal/app"
 	"github.com/SashaMelva/smart_filter/internal/config"
 	"github.com/SashaMelva/smart_filter/internal/handler/httphandler"
+	"github.com/SashaMelva/smart_filter/pkg"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -30,13 +32,27 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 	router.POST("/reg", handler.RegHendler)
 	router.POST("/auth", handler.AuthHendler)
 
-	router.GET("/user/:id", handler.GetUser)
-	router.POST("/user/", handler.CreateUser)
-	router.PUT("/user/", handler.UpdateUser)
-	router.DELETE("/user/:id", handler.DeleteUser)
+	protectedUser := router.Group("/user")
+	protectedUser.Use(AuthMiddleware(log))
+	{
+		protectedUser.GET("/:id", handler.GetUser)
+		protectedUser.POST("/", handler.CreateUser)
+		protectedUser.PUT("/", handler.UpdateUser)
+		protectedUser.DELETE("/:id", handler.DeleteUser)
+	}
 
-	// router.GET("/account-chaild/", handler.GetAccountsChailds)
-	// router.POST("/account-chaild/", handler.linkingСhildsAccount)
+	protectedParent := router.Group("/children")
+	protectedParent.Use(AuthMiddleware(log))
+	{
+		router.GET("/list/", handler.GetListChildren)
+		router.POST("/link/:id", handler.AddGetChildren)
+
+		router.GET("/filters/:id", handler.GetChildrenFilter)
+		router.POST("/filters/", handler.AddChildrenFilter)
+		router.DELETE("/filters/", handler.DeleteChildrenFilter)
+
+		// router.GET("/history/", handler.GetAccountsChailds)
+	}
 
 	return &Server{
 		srv: &http.Server{
@@ -59,4 +75,35 @@ func (s *Server) Stop(ctx context.Context) {
 	}
 
 	os.Exit(1)
+}
+
+func AuthMiddleware(log *zap.SugaredLogger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		log.Debug(token)
+
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
+			return
+		}
+
+		sub, err := pkg.ParseAccessToken(token, "secretJWT")
+
+		log.Debug(sub)
+		if err != nil {
+			log.Error(err)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
+		}
+		intAcc, err := strconv.Atoi(sub)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			log.Error(err)
+			return
+		}
+
+		c.Set("accountId", intAcc)
+		c.Next()
+	}
 }

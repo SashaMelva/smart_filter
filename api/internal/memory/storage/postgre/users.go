@@ -21,11 +21,12 @@ func (s *Storage) CreateUser(user *entity.User) (int, error) {
 
 func (s *Storage) GetUserById(id int) (*entity.User, error) {
 	var user entity.User
-	query := `select id, first_name, middle_name, last_name, date_birth, phone_number from users where id = $1`
+	query := `select id, account_id, first_name, middle_name, last_name, date_birth, phone_number from users where id = $1`
 	row := s.ConnectionDB.QueryRow(query, id)
 
 	err := row.Scan(
 		&user.Id,
+		&user.AccountId,
 		&user.FirstName,
 		&user.MiddelName,
 		&user.LastName,

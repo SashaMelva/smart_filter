@@ -5,17 +5,33 @@ import (
 	"strconv"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
+	"github.com/SashaMelva/smart_filter/pkg"
 	"github.com/gin-gonic/gin"
 )
 
 func (s *Service) CreateUser(ctx *gin.Context) {
+	var userCreaeter entity.UserCreater
 	var user entity.User
-	if err := ctx.ShouldBindJSON(&user); err != nil {
+	if err := ctx.ShouldBindJSON(&userCreaeter); err != nil {
 		ctx.String(http.StatusBadRequest, err.Error())
 		return
 	}
 
+	accoountId := ctx.GetInt("accountId")
+
+	years, err := pkg.GetAgeUser(user.DateBirthday)
 	s.log.Debug(user)
+
+	user = entity.User{
+		AccountId:    accoountId,
+		PhoneNumber:  userCreaeter.PhoneNumber,
+		FirstName:    userCreaeter.FirstName,
+		MiddelName:   userCreaeter.MiddelName,
+		LastName:     userCreaeter.LastName,
+		Age:          years,
+		DateBirthday: userCreaeter.DateBirthday,
+		AgeCategory:  pkg.GetAgeCategoryId(years),
+	}
 
 	id, err := s.app.CreateUser(&user)
 
