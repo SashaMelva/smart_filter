@@ -20,11 +20,6 @@ func main() {
 	log := logger.New(config.Logger, "../logs/")
 
 	connectionDB := connection.New(config.DataBase, log)
-	// err := migrator.RunMigrationsPg(connectionDB, "migrations")
-
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 
 	memstorage := storage.New(connectionDB.StorageDb, log)
 	app := app.New(log, memstorage)
