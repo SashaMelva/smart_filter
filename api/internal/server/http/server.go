@@ -39,6 +39,8 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		protectedUser.POST("/", handler.CreateUser)
 		protectedUser.PUT("/", handler.UpdateUser)
 		protectedUser.DELETE("/:id", handler.DeleteUser)
+
+		protectedUser.GET("/account/", handler.GetUserAccount)
 	}
 
 	protectedParent := router.Group("/children")

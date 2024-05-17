@@ -2,15 +2,22 @@ package storage
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
 
 func (s *Storage) CreateUser(user *entity.User) (int, error) {
 	var eventId int
-	query := `insert into users(first_name, middle_name, last_name, date_birth, phone_number) values($1, $2, $3, $4, $5) RETURNING id`
-	result := s.ConnectionDB.QueryRow(query, user.FirstName, user.MiddelName, user.LastName, user.DateBirthday, user.PhoneNumber)
-	err := result.Scan(&eventId)
+	date, err := time.Parse("2006-01-02", user.DateBirthday)
+
+	if err != nil {
+		return 0, err
+	}
+
+	query := `insert into users(first_name, middle_name, last_name, date_birth, phone_number, account_id, age_categoty_id) values($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	result := s.ConnectionDB.QueryRow(query, user.FirstName, user.MiddelName, user.LastName, date, user.PhoneNumber, user.AccountId, user.AgeCategory)
+	err = result.Scan(&eventId)
 
 	if err != nil {
 		return 0, err
@@ -22,6 +29,30 @@ func (s *Storage) CreateUser(user *entity.User) (int, error) {
 func (s *Storage) GetUserById(id int) (*entity.User, error) {
 	var user entity.User
 	query := `select id, account_id, first_name, middle_name, last_name, date_birth, phone_number from users where id = $1`
+	row := s.ConnectionDB.QueryRow(query, id)
+
+	err := row.Scan(
+		&user.Id,
+		&user.AccountId,
+		&user.FirstName,
+		&user.MiddelName,
+		&user.LastName,
+		&user.DateBirthday,
+		&user.PhoneNumber,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, err
+	} else if err != nil {
+		return &user, err
+	}
+
+	return &user, nil
+}
+
+func (s *Storage) GetUserByIdAccount(id int) (*entity.User, error) {
+	var user entity.User
+	query := `select id, account_id, first_name, middle_name, last_name, date_birth, phone_number from users where account_id = $1`
 	row := s.ConnectionDB.QueryRow(query, id)
 
 	err := row.Scan(
