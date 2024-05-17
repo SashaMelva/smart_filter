@@ -22,7 +22,7 @@ func main() {
 	connectionDB := connection.New(config.DataBase, log)
 
 	memstorage := storage.New(connectionDB.StorageDb, log)
-	app := app.New(log, memstorage)
+	app := app.New(log, memstorage, config.Tokens)
 
 	httpServer := http.NewServer(log, app, config.HttpServer)
 

@@ -27,6 +27,9 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		fmt.Println("Hellow world)")
 	})
 
+	router.POST("/reg", handler.RegHendler)
+	router.POST("/auth", handler.AuthHendler)
+
 	router.GET("/user/:id", handler.GetUser)
 	router.POST("/user/", handler.CreateUser)
 	router.PUT("/user/", handler.UpdateUser)
