@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/SashaMelva/smart_filter/internal/config"
 	"go.uber.org/zap"
 )
 

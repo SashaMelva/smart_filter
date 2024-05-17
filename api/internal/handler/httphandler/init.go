@@ -3,6 +3,7 @@ package httphandler
 import (
 	"sync"
 
+	"github.com/SashaMelva/smart_filter/internal/app"
 	"go.uber.org/zap"
 )
 

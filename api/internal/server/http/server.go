@@ -6,9 +6,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/SashaMelva/web-service-gin/internal/app"
-	"github.com/SashaMelva/web-service-gin/internal/config"
-	"github.com/SashaMelva/web-service-gin/internal/handler/httphandler"
+	"github.com/SashaMelva/smart_filter/internal/app"
+	"github.com/SashaMelva/smart_filter/internal/config"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -21,19 +20,13 @@ type Server struct {
 func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpServer) *Server {
 	log.Debug("URL: " + config.Host + ":" + config.Port)
 	router := gin.Default()
-	handler := httphandler.NewHendler(log, app)
+	// handler := httphandler.NewHendler(log, app)
 
 	router.GET("/", func(ctx *gin.Context) {
 		fmt.Println("Hellow world)")
 	})
 
-	router.POST("/event/", handler.CreateEventHandler)
-	router.GET("/events/:period", handler.GetAllEventsHandler)
-	router.GET("/event/:id", handler.GetEventByIdHandler)
-	router.DELETE("/event/:id", handler.DeleteEventHandler)
-	router.PUT("/event/", handler.UpdateEventHandler)
-
-	router.GET("/events-sending/:period", handler.GetEventsBySendingHandler)
+	// router.POST("/event/", handler.)
 
 	return &Server{
 		srv: &http.Server{

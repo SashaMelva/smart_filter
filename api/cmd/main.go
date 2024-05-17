@@ -6,12 +6,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/SashaMelva/web-service-gin/internal/app"
-	"github.com/SashaMelva/web-service-gin/internal/config"
-	"github.com/SashaMelva/web-service-gin/internal/logger"
-	"github.com/SashaMelva/web-service-gin/internal/memory/connection"
-	storage "github.com/SashaMelva/web-service-gin/internal/memory/storage/postgre"
-	"github.com/SashaMelva/web-service-gin/internal/server/http"
+	"github.com/SashaMelva/smart_filter/internal/app"
+	"github.com/SashaMelva/smart_filter/internal/config"
+	"github.com/SashaMelva/smart_filter/internal/logger"
+	"github.com/SashaMelva/smart_filter/internal/memory/connection"
+	storage "github.com/SashaMelva/smart_filter/internal/memory/storage/postgre"
+	"github.com/SashaMelva/smart_filter/internal/server/http"
 )
 
 func main() {

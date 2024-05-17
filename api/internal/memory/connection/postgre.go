@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/SashaMelva/smart_filter/internal/config"
 	_ "github.com/jackc/pgx/stdlib"
 	"go.uber.org/zap"
 )
