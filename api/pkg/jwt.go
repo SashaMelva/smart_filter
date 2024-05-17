@@ -12,8 +12,7 @@ import (
 
 func GenerateAccssesToken(userId int, jwtKey string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.StandardClaims{
-		ExpiresAt: time.Now().Unix(),
-		Subject:   strconv.Itoa(userId),
+		Subject: strconv.Itoa(userId),
 	})
 
 	tokenString, err := token.SignedString([]byte(jwtKey))

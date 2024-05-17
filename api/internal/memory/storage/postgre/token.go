@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"context"
 	"database/sql"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
@@ -19,24 +18,35 @@ func (s *Storage) SaveTokens(tokens *entity.RefreshToken) error {
 	return nil
 }
 func (s *Storage) GetTokenByUser(id int) (*entity.RefreshToken, error) {
-	var token *entity.RefreshToken
-	query := `select token from token where account_id = $1`
+	var token entity.RefreshToken
+	query := `select token, account_id from token where account_id = $1`
 	row := s.ConnectionDB.QueryRow(query, id)
 
 	err := row.Scan(
-		token.RefreshToken,
+		&token.RefreshToken,
+		&token.UserId,
 	)
+
+	s.log.Debug(token)
 	if err == sql.ErrNoRows {
 		return nil, err
 	} else if err != nil {
-		return token, err
+		return &token, err
 	}
 
-	token.UserId = id
-
-	return token, nil
+	return &token, nil
 }
 
-func (s *Storage) UpdateTokenByUser(reefToken *entity.RefreshToken, ctx context.Context) error {
+func (s *Storage) CreateToken(userId int) error {
+	var childrenId int
+	query := `insert into token (account_id, token) values($1, '')`
+	s.log.Debug(query, userId)
+	_, err := s.ConnectionDB.Exec(query, userId)
+
+	s.log.Debug(childrenId)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

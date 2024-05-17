@@ -1,14 +1,14 @@
 package entity
 
 type Account struct {
-	Login    string
-	Password string
-	Role     int
+	Login    string `json:"login"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
 }
 
 type AccountId struct {
-	Id       int
-	Login    string
-	Password string
-	Role     int
+	Id       int    `json:"id"`
+	Login    string `json:"login"`
+	Password string `json:"password"`
+	Role     string `json:"role"`
 }

@@ -14,6 +14,8 @@ func (s *Service) AuthHendler(ctx *gin.Context) {
 		return
 	}
 
+	s.log.Debug(account)
+
 	id, err := s.app.Auth(&account)
 
 	if err != nil {
