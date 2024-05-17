@@ -21,7 +21,7 @@ type UserCreater struct {
 }
 
 type ChilgrenLists struct {
-	IdUser    int         `json:"parent_id"`
+	IdParent  int         `json:"parent_id"`
 	Chilgrens []*Chilgren `json:"childrens"`
 }
 
@@ -31,6 +31,7 @@ type Ids struct {
 
 type Chilgren struct {
 	IdUser     int    `json:"user_id"`
+	AccountId  int    `json:"account_id"`
 	FirstName  string `json:"first_name"`
 	MiddelName string `json:"middel_name"`
 	LastName   string `json:"last_name"`

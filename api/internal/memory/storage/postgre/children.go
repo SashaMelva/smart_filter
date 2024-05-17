@@ -4,10 +4,11 @@ import (
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
 
-func (s *Storage) CreateChildren(children, idParent int) error {
+func (s *Storage) CreateChildren(idParent, children int) error {
 	var childrenId int
+	s.log.Debug(idParent, children)
 	query := `insert into children(user_parent_id, user_id) values($1, $2) RETURNING id`
-	result := s.ConnectionDB.QueryRow(query, idParent)
+	result := s.ConnectionDB.QueryRow(query, idParent, children)
 	err := result.Scan(&childrenId)
 
 	if err != nil {
@@ -19,11 +20,32 @@ func (s *Storage) CreateChildren(children, idParent int) error {
 
 func (s *Storage) GetChildrens(idParent int) (*entity.ChilgrenLists, error) {
 	var children entity.ChilgrenLists
-	query := `insert into children(user_parent_id, user_id) values($1, $2) RETURNING id`
-	result := s.ConnectionDB.QueryRow(query, idParent)
-	err := result.Scan(&children)
+	query := `SELECT user_id, first_name, middle_name, last_name, account_id  FROM public.children
+		INNER JOIN users ON children.user_id = users.account_id
+		WHERE user_parent_id = $1`
+	rows, err := s.ConnectionDB.Query(query, idParent)
 
 	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		ch := entity.Chilgren{}
+
+		if err := rows.Scan(
+			&ch.IdUser,
+			&ch.FirstName,
+			&ch.MiddelName,
+			&ch.LastName,
+			&ch.AccountId,
+		); err != nil {
+			return nil, err
+		}
+
+		children.Chilgrens = append(children.Chilgrens, &ch)
+	}
+	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 

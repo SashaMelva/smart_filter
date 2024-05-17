@@ -41,19 +41,20 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		protectedUser.DELETE("/:id", handler.DeleteUser)
 
 		protectedUser.GET("/account/", handler.GetUserAccount)
+
 	}
 
 	protectedParent := router.Group("/children")
 	protectedParent.Use(AuthMiddleware(log))
 	{
-		router.GET("/list/", handler.GetListChildren)
-		router.POST("/link/:id", handler.AddGetChildren)
+		protectedParent.GET("/list/", handler.GetListChildren)
+		protectedParent.POST("/link/:id", handler.AddGetChildren)
 
-		router.GET("/filters/:id", handler.GetChildrenFilter)
-		router.POST("/filters/", handler.AddChildrenFilter)
-		router.DELETE("/filters/", handler.DeleteChildrenFilter)
+		protectedParent.GET("/filters/:id", handler.GetChildrenFilter)
+		protectedParent.POST("/filters/", handler.AddChildrenFilter)
+		protectedParent.DELETE("/filters/", handler.DeleteChildrenFilter)
 
-		// router.GET("/history/", handler.GetAccountsChailds)
+		// protectedParent.GET("/history/", handler.GetAccountsChailds)
 	}
 
 	return &Server{

@@ -11,6 +11,8 @@ import (
 func (s *Service) GetListChildren(ctx *gin.Context) {
 	var list *entity.ChilgrenLists
 	accoountId := ctx.GetInt("accountId")
+
+	s.log.Debug(accoountId)
 	list, err := s.app.GetListChildren(accoountId)
 
 	if err != nil {
