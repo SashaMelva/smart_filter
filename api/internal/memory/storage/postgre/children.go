@@ -62,3 +62,32 @@ func (s *Storage) DeleteChildren(childrenId int) error {
 
 	return nil
 }
+
+func (s *Storage) GetFiltersByChaild(idParent int) (*entity.Fileters, error) {
+	var children entity.Fileters
+	query := `SELECT id, name from filters Where account_id = $1`
+	rows, err := s.ConnectionDB.Query(query, idParent)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		ch := entity.Fileter{}
+
+		if err := rows.Scan(
+			&ch.Id,
+			&ch.Name,
+		); err != nil {
+			return nil, err
+		}
+
+		children.Filters = append(children.Filters, &ch)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &children, nil
+}

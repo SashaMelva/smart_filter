@@ -44,8 +44,22 @@ func (s *Service) AddGetChildren(ctx *gin.Context) {
 }
 
 func (s *Service) GetChildrenFilter(ctx *gin.Context) {
+	var filters *entity.Fileters
+	id, err := strconv.Atoi(ctx.Params.ByName("id"))
 
-	ctx.JSON(http.StatusOK, ``)
+	if err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	filters, err = s.app.GetFiltersByChaild(id)
+
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"filters": filters.Filters})
 }
 func (s *Service) AddChildrenFilter(ctx *gin.Context) {
 

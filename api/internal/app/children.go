@@ -24,3 +24,15 @@ func (a *App) AddListChildren(idParent, idChil int) error {
 
 	return nil
 }
+
+func (a *App) GetFiltersByChaild(accoountId int) (*entity.Fileters, error) {
+	var filters *entity.Fileters
+	filters, err := a.storage.GetFiltersByChaild(accoountId)
+
+	if err != nil {
+		a.log.Error(err)
+		return nil, err
+	}
+
+	return filters, nil
+}
