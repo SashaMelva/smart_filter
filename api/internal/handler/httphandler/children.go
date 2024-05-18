@@ -62,11 +62,24 @@ func (s *Service) GetChildrenFilter(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"filters": filters.Filters})
 }
 
-func (s *Service) AddChildrenFilter(ctx *gin.Context) {
+func (s *Service) AddChildrenFilterGener(ctx *gin.Context) {
+	var filters entity.FilterGeners
+
+	if err := ctx.ShouldBindJSON(&filters); err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := s.app.AddFiltersGanreForChaild(&filters)
+
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
 
 	ctx.JSON(http.StatusOK, ``)
 }
-func (s *Service) DeleteChildrenFilter(ctx *gin.Context) {
+func (s *Service) DeleteChildrenFilterGener(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, ``)
 }

@@ -36,3 +36,14 @@ func (a *App) GetFiltersByChaild(accoountId int) (*entity.Fileters, error) {
 
 	return filters, nil
 }
+
+func (a *App) AddFiltersGanreForChaild(filtes *entity.FilterGeners) error {
+	err := a.storage.UpdateFiltersByChaild(filtes)
+
+	if err != nil {
+		a.log.Error(err)
+		return err
+	}
+
+	return nil
+}

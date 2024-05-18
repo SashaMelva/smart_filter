@@ -10,6 +10,7 @@ type User struct {
 	Age          int    `json:"age"`
 	DateBirthday string `json:"date_birth"`
 	AgeCategory  int    `json:"age_category"`
+	GenersIds    string `json:"gener_ids"`
 }
 
 type UserCreater struct {
@@ -40,4 +41,9 @@ type Chilgren struct {
 type FilterLists struct {
 	IdUser    int
 	Chilgrens []*Chilgren
+}
+
+type FilterGeners struct {
+	IdChildren int      `json:"account_children_id"`
+	IdGeners   []string `json:"geners_id"`
 }

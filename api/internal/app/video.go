@@ -2,20 +2,56 @@ package app
 
 import (
 	"errors"
+	"strconv"
+	"strings"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
 
-func (a *App) ChekVideo(video entity.VideoCheker) error {
+func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 	ok, err := a.storage.ChekVideo(video.UrlVideo)
-
+	a.log.Debug("DB ", ok)
 	if err != nil {
 		a.log.Error(err)
-		return err
+		return false, err
 	}
 
-	if !ok {
-		return errors.New("Видео с этим url не существует")
+	if ok {
+		a.log.Debug("Достаем видео и пользователя")
+
+		user, err := a.storage.GetUserByIdAccount(video.IdAccount)
+
+		if err != nil {
+			return false, err
+		}
+		video, err := a.storage.GetVideoByUrl(video.UrlVideo)
+
+		if err != nil {
+			return false, err
+		}
+
+		if user.AgeCategory != video.AgeCategoryId {
+			return false, nil
+		}
+
+		arrGaner := strings.Split(user.GenersIds, ",")
+
+		if len(arrGaner) == 0 {
+			return true, nil
+		}
+		for i := range arrGaner {
+			intW, err := strconv.Atoi(arrGaner[i])
+
+			if err != nil {
+				return false, err
+			}
+
+			if intW == video.GenerId {
+				return true, nil
+			}
+		}
+
+		return false, nil
 	}
 
 	err = a.storage.AddNewVideo(video.UrlVideo, "")
@@ -24,7 +60,7 @@ func (a *App) ChekVideo(video entity.VideoCheker) error {
 		a.log.Error(err)
 	}
 
-	return nil
+	return false, nil
 }
 
 func (a *App) AddNewVideo(video entity.Video) error {

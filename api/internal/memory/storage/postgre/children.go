@@ -1,6 +1,8 @@
 package storage
 
 import (
+	"strings"
+
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
 
@@ -90,4 +92,16 @@ func (s *Storage) GetFiltersByChaild(idParent int) (*entity.Fileters, error) {
 	}
 
 	return &children, nil
+}
+
+func (s *Storage) UpdateFiltersByChaild(filters *entity.FilterGeners) error {
+	str := strings.Join(filters.IdGeners, ",")
+	query := `update users set gener_ids=$1  where account_id=$6`
+	_, err := s.ConnectionDB.Exec(query, str, filters.IdChildren)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

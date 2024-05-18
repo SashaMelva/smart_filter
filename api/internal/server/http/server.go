@@ -50,15 +50,13 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		protectedParent.GET("/list/", handler.GetListChildren)
 		protectedParent.POST("/link/:id", handler.AddGetChildren)
 
-		protectedParent.POST("/filters/", handler.AddChildrenFilter)
-		protectedParent.DELETE("/filters/", handler.DeleteChildrenFilter)
+		protectedParent.PUT("/filters-gener/", handler.AddChildrenFilterGener)
 
 		// protectedParent.GET("/history/", handler.GetAccountsChailds)
 	}
 
 	videoFilters := router.Group("/filters")
 	{
-
 		videoFilters.GET("/chaild/:id", handler.GetChildrenFilter)
 		videoFilters.GET("/age-category/:id", handler.GetFilterAgeCategory)
 		// videoFilters.GET("/gener-category/:id", handler.GetGenre)

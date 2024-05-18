@@ -87,6 +87,29 @@ func (s *Storage) ChekVideo(url string) (bool, error) {
 	return true, nil
 }
 
+func (s *Storage) GetVideoByUrl(url string) (*entity.VideoId, error) {
+	var count entity.VideoId
+	query := `SELECT id, url, name, age_category_id, status_id, tags, lenguage,gener_id FROM public.video WHERE url = $1`
+	rows := s.ConnectionDB.QueryRow(query, url)
+
+	err := rows.Scan(
+		&count.Id,
+		&count.Url,
+		&count.Name,
+		&count.AgeCategoryId,
+		&count.StatusId,
+		&count.Tags,
+		&count.Lenguage,
+		&count.GenerId,
+	)
+
+	if err == sql.ErrNoRows {
+		return nil, err
+	}
+
+	return &count, nil
+}
+
 func (s *Storage) AddNewVideo(url string, name string) error {
 	var eventId int
 	query := `insert into video(url, status_id, name) values($1, $2, $3) RETURNING id`

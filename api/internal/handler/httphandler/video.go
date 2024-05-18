@@ -33,14 +33,18 @@ func (s *Service) ChekVideo(ctx *gin.Context) {
 		return
 	}
 
-	err := s.app.ChekVideo(video)
+	ok, err := s.app.ChekVideo(video)
 
 	if err != nil {
 		ctx.String(http.StatusNotFound, err.Error())
 		return
 	}
 
-	ctx.JSON(http.StatusOK, ``)
+	if ok {
+		ctx.JSON(http.StatusOK, gin.H{"filters": "OK"})
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"filters": "Error"})
 }
 
 func (s *Service) GetAllStatus(ctx *gin.Context) {
