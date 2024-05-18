@@ -21,3 +21,12 @@ type FilterAgeCategore struct {
 	Params_eng  string `json:"params_eng"`
 	Params_ru   string `json:"params_ru"`
 }
+
+type ProcentByCategoryUser struct {
+	CategoryName string `json:"category_name"`
+	Procent      int    `json:"procent"`
+}
+
+type ProcentByCategoresUser struct {
+	Category []*ProcentByCategoryUser `json:"procent_category"`
+}

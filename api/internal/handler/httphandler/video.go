@@ -127,3 +127,9 @@ func (s *Service) GetFilterAgeCategory(ctx *gin.Context) {
 	s.log.Debug(filters)
 	ctx.JSON(http.StatusOK, filters)
 }
+
+func (s *Service) GetHistoryByCategoriesVideos(ctx *gin.Context) {
+	var procent *entity.ProcentByCategoresUser
+
+	ctx.JSON(http.StatusOK, procent)
+}

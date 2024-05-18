@@ -75,6 +75,8 @@ func chekTrue(ids string, videId int) bool {
 			return true
 		}
 	}
+
+	return false
 }
 
 func (a *App) AddNewVideo(video entity.Video) error {

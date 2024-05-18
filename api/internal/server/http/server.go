@@ -52,7 +52,7 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 
 		protectedParent.PUT("/filters-gener/", handler.AddChildrenFilterGener)
 
-		// protectedParent.GET("/history/", handler.GetAccountsChailds)
+		protectedParent.GET("/history-content-genre/:id/:date_start", handler.GetHistoryByCategoriesVideos)
 	}
 
 	videoFilters := router.Group("/filters")
