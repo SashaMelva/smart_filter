@@ -28,6 +28,18 @@ func (a *App) GetUserById(id int) (*entity.User, error) {
 	return user, nil
 }
 
+func (a *App) GetUserByIdAccount(id int) (*entity.User, error) {
+	var user *entity.User
+	user, err := a.storage.GetUserByIdAccount(id)
+
+	if err != nil {
+		a.log.Error(err)
+		return nil, err
+	}
+
+	return user, nil
+}
+
 func (a *App) DeleteUser(id int) error {
 	err := a.storage.DeleteUserById(id)
 

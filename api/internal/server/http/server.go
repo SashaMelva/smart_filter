@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/SashaMelva/smart_filter/internal/app"
 	"github.com/SashaMelva/smart_filter/internal/config"
 	"github.com/SashaMelva/smart_filter/internal/handler/httphandler"
+	"github.com/SashaMelva/smart_filter/pkg"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -27,13 +29,48 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		fmt.Println("Hellow world)")
 	})
 
-	router.GET("/user/:id", handler.GetUser)
-	router.POST("/user/", handler.CreateUser)
-	router.PUT("/user/", handler.UpdateUser)
-	router.DELETE("/user/:id", handler.DeleteUser)
+	router.POST("/reg", handler.RegHendler)
+	router.POST("/auth", handler.AuthHendler)
 
-	// router.GET("/account-chaild/", handler.GetAccountsChailds)
-	// router.POST("/account-chaild/", handler.linkingСhildsAccount)
+	protectedUser := router.Group("/user")
+	protectedUser.Use(AuthMiddleware(log))
+	{
+		protectedUser.GET("/:id", handler.GetUser)
+		protectedUser.POST("/", handler.CreateUser)
+		protectedUser.PUT("/", handler.UpdateUser)
+		protectedUser.DELETE("/:id", handler.DeleteUser)
+
+		protectedUser.GET("/account/", handler.GetUserAccount)
+
+	}
+
+	protectedParent := router.Group("/children")
+	protectedParent.Use(AuthMiddleware(log))
+	{
+		protectedParent.GET("/list/", handler.GetListChildren)
+		protectedParent.POST("/link/:id", handler.AddGetChildren)
+
+		protectedParent.PUT("/filters-gener/", handler.AddChildrenFilterGener)
+
+		// protectedParent.GET("/history/", handler.GetAccountsChailds)
+	}
+
+	videoFilters := router.Group("/filters")
+	{
+		videoFilters.GET("/chaild/:id", handler.GetChildrenFilter)
+		videoFilters.GET("/age-category/:id", handler.GetFilterAgeCategory)
+		// videoFilters.GET("/gener-category/:id", handler.GetGenre)
+	}
+
+	protectedVideo := router.Group("/video")
+	{
+		protectedVideo.POST("/chek", handler.ChekVideo)
+		router.POST("/video", handler.AddNewVideo)
+		router.PUT("/video", handler.UpdateVideo)
+		router.PUT("/video-status", handler.UpdateStatusVideo)
+		router.GET("/all-status", handler.GetAllStatus)
+		router.GET("/all-age-category", handler.GetAllAgeCategory)
+	}
 
 	return &Server{
 		srv: &http.Server{
@@ -56,4 +93,35 @@ func (s *Server) Stop(ctx context.Context) {
 	}
 
 	os.Exit(1)
+}
+
+func AuthMiddleware(log *zap.SugaredLogger) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		log.Debug(token)
+
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Authorization header is required"})
+			return
+		}
+
+		sub, err := pkg.ParseAccessToken(token, "secretJWT")
+
+		log.Debug(sub)
+		if err != nil {
+			log.Error(err)
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			return
+		}
+		intAcc, err := strconv.Atoi(sub)
+
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			log.Error(err)
+			return
+		}
+
+		c.Set("accountId", intAcc)
+		c.Next()
+	}
 }

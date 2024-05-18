@@ -12,6 +12,12 @@ type Config struct {
 	Logger     *ConfigLogger
 	DataBase   *ConfigDB
 	ConfigRMQ  *ConfigRMQ
+	Tokens     *Tokens
+}
+
+type Tokens struct {
+	SecretJWT string
+	ExpressIn string
 }
 
 type ConfigRMQ struct {
@@ -60,6 +66,11 @@ func New(pahToFile string) Config {
 		Password: viper.Get("passwordDB").(string),
 	}
 
+	tokens := Tokens{
+		SecretJWT: viper.Get("secretJWT").(string),
+		ExpressIn: viper.Get("expressIn").(string),
+	}
+
 	configHttpServer := ConfigHttpServer{
 		Host: viper.Get("hostHttpServer").(string),
 		Port: viper.Get("portHttpServe").(string),
@@ -76,5 +87,6 @@ func New(pahToFile string) Config {
 		HttpServer: &configHttpServer,
 		Logger:     &configLog,
 		DataBase:   &configDB,
+		Tokens:     &tokens,
 	}
 }
