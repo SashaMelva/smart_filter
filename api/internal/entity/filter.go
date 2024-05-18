@@ -23,8 +23,9 @@ type FilterAgeCategore struct {
 }
 
 type ProcentByCategoryUser struct {
-	CategoryName string `json:"category_name"`
-	Procent      int    `json:"procent"`
+	CategoryName string  `json:"category_name"`
+	Procent      float64 `json:"procent"`
+	Count        int     `json:"count"`
 }
 
 type ProcentByCategoresUser struct {

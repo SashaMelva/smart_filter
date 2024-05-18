@@ -155,3 +155,16 @@ func (a *App) GetFiltersAgeCategoryVideo() (*entity.FilterAgeCategores, error) {
 
 	return list, nil
 }
+
+func (a *App) GetHistoryByCategoriesVideos(id int, date_start string) (*entity.ProcentByCategoresUser, error) {
+	var list *entity.ProcentByCategoresUser
+	date_end := "2024-05-20"
+	list, err := a.storage.GetHistoryByCategoriesVideos(id, date_start, date_end)
+
+	if err != nil {
+		a.log.Error(err)
+		return nil, err
+	}
+
+	return list, nil
+}
