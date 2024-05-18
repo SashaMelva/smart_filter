@@ -4,6 +4,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
@@ -34,21 +35,15 @@ func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 			return false, nil
 		}
 
-		arrGaner := strings.Split(user.GenersIds, ",")
-
-		if len(arrGaner) == 0 {
-			return true, nil
-		}
-		for i := range arrGaner {
-			intW, err := strconv.Atoi(arrGaner[i])
+		if chekTrue(user.GenersIds, video.GenerId) {
+			datetime := time.Now()
+			err := a.storage.AddHistory(video.Id, user.AccountId, datetime)
 
 			if err != nil {
 				return false, err
 			}
 
-			if intW == video.GenerId {
-				return true, nil
-			}
+			return true, nil
 		}
 
 		return false, nil
@@ -61,6 +56,25 @@ func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func chekTrue(ids string, videId int) bool {
+	arrGaner := strings.Split(ids, ",")
+
+	if len(arrGaner) == 0 {
+		return true
+	}
+	for i := range arrGaner {
+		intW, err := strconv.Atoi(arrGaner[i])
+
+		if err != nil {
+			return false
+		}
+
+		if intW == videId {
+			return true
+		}
+	}
 }
 
 func (a *App) AddNewVideo(video entity.Video) error {
