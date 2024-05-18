@@ -57,6 +57,14 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 		// protectedParent.GET("/history/", handler.GetAccountsChailds)
 	}
 
+	protectedVideo := router.Group("/video")
+	{
+		protectedVideo.POST("/chek", handler.ChekVideo)
+		router.POST("/video", handler.AddNewVideo)
+		router.GET("/all-status", handler.GetAllStatus)
+		router.GET("/all-age-category", handler.GetAllAgeCategory)
+	}
+
 	return &Server{
 		srv: &http.Server{
 			Addr:    config.Host + ":" + config.Port,
