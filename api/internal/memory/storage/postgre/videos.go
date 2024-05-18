@@ -2,6 +2,7 @@ package storage
 
 import (
 	"database/sql"
+	"strings"
 
 	"github.com/SashaMelva/smart_filter/internal/entity"
 )
@@ -79,16 +80,45 @@ func (s *Storage) ChekVideo(url string) (bool, error) {
 		return false, err
 	}
 
+	if count == 0 {
+		return false, nil
+	}
+
 	return true, nil
 }
 
 func (s *Storage) AddNewVideo(url string, name string) error {
 	var eventId int
-	query := `insert into video(url, name) values($1, $2, $3) RETURNING id`
+	query := `insert into video(url, status_id, name) values($1, $2, $3) RETURNING id`
 	result := s.ConnectionDB.QueryRow(query, url, 1, name)
 	err := result.Scan(&eventId)
 
 	s.log.Debug(eventId)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) UpdateStatusVideo(video entity.VideoIdStatus) error {
+	query := `update video set status_id = $1 WHERE id = $2`
+	_, err := s.ConnectionDB.Exec(query, video.Status, video.Id)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) UpdateVideo(video entity.VideoId) error {
+	s.log.Debug(video)
+	argStr := strings.Join(video.Tags, ",")
+	query := `update video set
+	url = $1, name = $2, age_categoty_id = $3, status_id = $4, tags = $5 WHERE id = $6`
+	_, err := s.ConnectionDB.Exec(query, video.Url, video.Name, video.AgeCategoryId, video.StatusId, argStr, video.Id)
+
 	if err != nil {
 		return err
 	}

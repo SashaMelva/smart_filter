@@ -72,3 +72,22 @@ func (a *App) GetAllAgeCategoryVideo() (*entity.AgeCategores, error) {
 
 	return list, nil
 }
+
+func (a *App) UpdateVideo(video entity.VideoId) error {
+	err := a.storage.UpdateVideo(video)
+
+	if err != nil {
+		a.log.Error(err)
+	}
+
+	return err
+}
+func (a *App) UpdateStatusVideo(video entity.VideoIdStatus) error {
+	err := a.storage.UpdateStatusVideo(video)
+
+	if err != nil {
+		a.log.Error(err)
+	}
+
+	return err
+}

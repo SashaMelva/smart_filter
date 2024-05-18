@@ -72,3 +72,39 @@ func (s *Service) GetAllAgeCategory(ctx *gin.Context) {
 	s.log.Debug(user)
 	ctx.JSON(http.StatusOK, user)
 }
+
+func (s *Service) UpdateVideo(ctx *gin.Context) {
+	var video entity.VideoId
+
+	if err := ctx.ShouldBindJSON(&video); err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := s.app.UpdateVideo(video)
+
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ``)
+}
+
+func (s *Service) UpdateStatusVideo(ctx *gin.Context) {
+	var video entity.VideoIdStatus
+
+	if err := ctx.ShouldBindJSON(&video); err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	err := s.app.UpdateStatusVideo(video)
+
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, ``)
+}

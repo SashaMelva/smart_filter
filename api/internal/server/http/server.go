@@ -62,6 +62,8 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 	{
 		protectedVideo.POST("/chek", handler.ChekVideo)
 		router.POST("/video", handler.AddNewVideo)
+		router.PUT("/video", handler.UpdateVideo)
+		router.PUT("/video-status", handler.UpdateStatusVideo)
 		router.GET("/all-status", handler.GetAllStatus)
 		router.GET("/all-age-category", handler.GetAllAgeCategory)
 	}
