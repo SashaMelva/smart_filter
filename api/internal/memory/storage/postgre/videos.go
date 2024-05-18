@@ -116,12 +116,44 @@ func (s *Storage) UpdateVideo(video entity.VideoId) error {
 	s.log.Debug(video)
 	argStr := strings.Join(video.Tags, ",")
 	query := `update video set
-	url = $1, name = $2, age_categoty_id = $3, status_id = $4, tags = $5 WHERE id = $6`
-	_, err := s.ConnectionDB.Exec(query, video.Url, video.Name, video.AgeCategoryId, video.StatusId, argStr, video.Id)
+	url = $1, name = $2, age_categoty_id = $3, status_id = $4, tags = $5, gener_id = $6, lenguage = $7 WHERE id = $8`
+	_, err := s.ConnectionDB.Exec(query, video.Url, video.Name, video.AgeCategoryId, video.StatusId, argStr, video.GenerId, video.Lenguage, video.Id)
 
 	if err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func (s *Storage) GetFilterAgeCategory() (*entity.FilterAgeCategores, error) {
+	var videos entity.FilterAgeCategores
+	query := `SELECT id, name, category_id, params_eng, params_ru FROM filter_age_category`
+	rows, err := s.ConnectionDB.Query(query)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		video := entity.FilterAgeCategore{}
+
+		if err := rows.Scan(
+			&video.Id,
+			&video.Name,
+			&video.Category_id,
+			&video.Params_eng,
+			&video.Params_ru,
+		); err != nil {
+			return nil, err
+		}
+
+		videos.Filters = append(videos.Filters, &video)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return &videos, nil
 }

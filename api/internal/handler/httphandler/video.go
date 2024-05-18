@@ -108,3 +108,18 @@ func (s *Service) UpdateStatusVideo(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, ``)
 }
+
+func (s *Service) GetFilterAgeCategory(ctx *gin.Context) {
+	var filters *entity.FilterAgeCategores
+	var err error
+
+	filters, err = s.app.GetFiltersAgeCategoryVideo()
+
+	if err != nil {
+		ctx.String(http.StatusNotFound, err.Error())
+		return
+	}
+
+	s.log.Debug(filters)
+	ctx.JSON(http.StatusOK, filters)
+}

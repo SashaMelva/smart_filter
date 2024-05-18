@@ -91,3 +91,15 @@ func (a *App) UpdateStatusVideo(video entity.VideoIdStatus) error {
 
 	return err
 }
+
+func (a *App) GetFiltersAgeCategoryVideo() (*entity.FilterAgeCategores, error) {
+	var list *entity.FilterAgeCategores
+	list, err := a.storage.GetFilterAgeCategory()
+
+	if err != nil {
+		a.log.Error(err)
+		return nil, err
+	}
+
+	return list, nil
+}

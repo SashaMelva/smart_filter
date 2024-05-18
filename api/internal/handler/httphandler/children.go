@@ -61,6 +61,7 @@ func (s *Service) GetChildrenFilter(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{"filters": filters.Filters})
 }
+
 func (s *Service) AddChildrenFilter(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, ``)

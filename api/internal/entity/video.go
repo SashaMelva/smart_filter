@@ -7,6 +7,8 @@ type VideoId struct {
 	AgeCategoryId int      `json:"age_category_id"`
 	StatusId      int      `json:"status_id"`
 	Tags          []string `json:"tags"`
+	Lenguage      string   `json:"lenguage"`
+	GenerId       int      `json:"gener_id"`
 }
 type VideoIdStatus struct {
 	Id     int `json:"id"`
