@@ -180,3 +180,16 @@ func (a *App) GetHistoryByCategoriesVideos(id int, date_start string) (*entity.P
 
 	return list, nil
 }
+
+func (a *App) GetHistoryByResourcesVideos(id int) (*entity.ProcentByCategoresUser, error) {
+	var list *entity.ProcentByCategoresUser
+
+	list, err := a.storage.GetHistoryByResoursesVideos(id)
+
+	if err != nil {
+		a.log.Error(err)
+		return nil, err
+	}
+
+	return list, nil
+}

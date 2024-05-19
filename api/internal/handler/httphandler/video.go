@@ -149,3 +149,22 @@ func (s *Service) GetHistoryByCategoriesVideos(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, procent)
 }
+
+func (s *Service) GetResoursesFilter(ctx *gin.Context) {
+	var procent *entity.ProcentByCategoresUser
+	id, err := strconv.Atoi(ctx.Params.ByName("id"))
+
+	if err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	procent, err = s.app.GetHistoryByResourcesVideos(id)
+
+	if err != nil {
+		ctx.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	ctx.JSON(http.StatusOK, procent)
+}

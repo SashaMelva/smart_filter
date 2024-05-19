@@ -65,3 +65,50 @@ func (s *Storage) GetHistoryByCategoriesVideos(children int, date_start, date_en
 
 	return &categories, nil
 }
+
+func (s *Storage) GetHistoryByResoursesVideos(children int) (*entity.ProcentByCategoresUser, error) {
+	var categories entity.ProcentByCategoresUser
+	s.log.Debug(children)
+	query := `SELECT name_servis, Count(video_id) AS count_video FROM public.history
+	INNER join video ON history.video_id = video.id
+	WHERE account_id = $1
+	GROUP BY  name_servis
+	Order BY 2 desc
+	LIMIT 3`
+	rows, err := s.ConnectionDB.Query(query, children)
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		ch := entity.ProcentByCategoryUser{}
+
+		if err := rows.Scan(
+			&ch.CategoryName,
+			&ch.Count,
+		); err != nil {
+			return nil, err
+		}
+
+		categories.Category = append(categories.Category, &ch)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	all := 0
+	for i := range categories.Category {
+		all += categories.Category[i].Count
+	}
+	s.log.Debug(all)
+
+	for i := range categories.Category {
+		s.log.Debug(i, float64(categories.Category[i].Count)/float64(all), all, all%categories.Category[i].Count)
+		categories.Category[i].Procent = math.Round(float64(categories.Category[i].Count) / float64(all) * 100)
+	}
+
+	return &categories, nil
+}
