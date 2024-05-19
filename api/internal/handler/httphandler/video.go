@@ -43,9 +43,9 @@ func (s *Service) ChekVideo(ctx *gin.Context) {
 
 	if ok {
 		ctx.JSON(http.StatusOK, gin.H{"filters": "OK"})
+	} else {
+		ctx.JSON(http.StatusOK, gin.H{"filters": "Error"})
 	}
-
-	ctx.JSON(http.StatusOK, gin.H{"filters": "Error"})
 }
 
 func (s *Service) GetAllStatus(ctx *gin.Context) {

@@ -19,25 +19,30 @@ func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 
 	if ok {
 		a.log.Debug("Достаем видео и пользователя")
-
+		a.log.Debug(video)
 		user, err := a.storage.GetUserByIdAccount(video.IdAccount)
-
+		a.log.Debug(user)
 		if err != nil {
 			return false, err
 		}
-		video, err := a.storage.GetVideoByUrl(video.UrlVideo)
-
+		videoNew, err := a.storage.GetVideoByUrl(video.UrlVideo)
+		a.log.Debug(videoNew)
 		if err != nil {
 			return false, err
 		}
 
-		if user.AgeCategory < video.AgeCategoryId {
+		a.log.Debug(user.AgeCategory < videoNew.AgeCategoryId, user.AgeCategory, videoNew.AgeCategoryId)
+		if user.AgeCategory < videoNew.AgeCategoryId || videoNew.AgeCategoryId == 0 {
 			return false, nil
 		}
 
-		if chekTrue(user.GenersIds, video.GenerId) {
+		arrGaner := strings.Split(strings.TrimSpace(user.GenersIds), ",")
+		a.log.Debug(arrGaner, len(arrGaner))
+
+		a.log.Debug(chekTrue(user.GenersIds, videoNew.GenerId), videoNew.GenerId, user.GenersIds)
+		if chekTrue(user.GenersIds, videoNew.GenerId) {
 			datetime := time.Now()
-			err := a.storage.AddHistory(video.Id, user.AccountId, datetime)
+			err := a.storage.AddHistory(videoNew.Id, user.AccountId, datetime)
 
 			if err != nil {
 				return false, err
@@ -59,10 +64,17 @@ func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 }
 
 func chekTrue(ids string, videId int) bool {
-	arrGaner := strings.Split(ids, ",")
-
-	if len(arrGaner) == 0 {
-		return true
+	arrGaner := strings.Split(strings.TrimSpace(ids), ",")
+	if len(arrGaner) == 1 {
+		intW, err := strconv.Atoi(arrGaner[0])
+		if err != nil {
+			return true
+		}
+		if intW == videId {
+			return true
+		} else {
+			return false
+		}
 	}
 	for i := range arrGaner {
 		intW, err := strconv.Atoi(arrGaner[i])
