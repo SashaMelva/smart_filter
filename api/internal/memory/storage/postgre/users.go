@@ -52,7 +52,7 @@ func (s *Storage) GetUserById(id int) (*entity.User, error) {
 
 func (s *Storage) GetUserByIdAccount(id int) (*entity.User, error) {
 	var user entity.User
-	query := `select id, account_id, first_name, middle_name, last_name, date_birth, phone_number from users where account_id = $1`
+	query := `select id, account_id, first_name, middle_name, last_name, date_birth, phone_number, age_categoty_id, gener_ids from users where account_id = $1`
 	row := s.ConnectionDB.QueryRow(query, id)
 
 	err := row.Scan(
@@ -63,6 +63,8 @@ func (s *Storage) GetUserByIdAccount(id int) (*entity.User, error) {
 		&user.LastName,
 		&user.DateBirthday,
 		&user.PhoneNumber,
+		&user.AgeCategory,
+		&user.GenersIds,
 	)
 
 	if err == sql.ErrNoRows {
