@@ -7,25 +7,7 @@ const instance = axios.create({
 
 export const userAPI = {
     getMe() {
-        return instance.get("auth/discord/me")
-            .then(response => {
-                return response.data;
-            })
-            .catch(err => {
-                return null;
-            });
-    },
-    getCredits() {
-        return instance.get("/credits")
-            .then(response => {
-                return response.data;
-            })
-            .catch(err => {
-                return null;
-            });
-    },
-    applyCredit(credit) {
-        return instance.post("/credits/apply", credit)
+        return instance.get("auth/me")
             .then(response => {
                 return response.data;
             })
