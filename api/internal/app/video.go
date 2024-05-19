@@ -31,7 +31,7 @@ func (a *App) ChekVideo(video entity.VideoCheker) (bool, error) {
 			return false, err
 		}
 
-		if user.AgeCategory != video.AgeCategoryId {
+		if user.AgeCategory < video.AgeCategoryId {
 			return false, nil
 		}
 
