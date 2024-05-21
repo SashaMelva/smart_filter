@@ -13,6 +13,11 @@ import (
 	"github.com/SashaMelva/smart_filter/pkg"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+
+	_ "github.com/SashaMelva/smart_filter/docs"
 )
 
 type Server struct {
@@ -25,6 +30,7 @@ func NewServer(log *zap.SugaredLogger, app *app.App, config *config.ConfigHttpSe
 	router := gin.Default()
 	handler := httphandler.NewHendler(log, app)
 
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.GET("/", func(ctx *gin.Context) {
 		fmt.Println("Hellow world)")
 	})

@@ -14,6 +14,17 @@ import (
 	"github.com/SashaMelva/smart_filter/internal/server/http"
 )
 
+// @title Todo App API
+// @version 1.0
+// @description API Server for smart filter
+
+// @host localhost:8082
+// @BasePath /
+
+// @securityDefinitions.apikey Authorization
+// @in header
+// @name Authorization
+
 func main() {
 	configFile := "../configs/"
 	config := config.New(configFile)
